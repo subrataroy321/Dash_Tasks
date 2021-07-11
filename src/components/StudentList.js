@@ -1,9 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 function StudentList() {
+    const [studentClass, setStudentClass] = useState('');
+    const [division, setDivision] = useState('');
+    const [roll_no, setRoll_no] = useState('');
+    const [name, setName] = useState('');
+    const [address, setAddress] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [math, setMath] = useState(0);
+    const [science, setScience] = useState(0);
+    const [english, setEnglish] = useState(0);
 
-    var studentArray = [
+    const [studentArray, setStudentArray] = useState([
         {
             class: "V", 
             division: "A", 
@@ -43,7 +53,38 @@ function StudentList() {
             english: 89
 
         }
-    ]
+    ])
+
+    var newStudent = {
+        class: studentClass, 
+        division: division, 
+        roll_no: roll_no, 
+        name: name,
+        address: address,
+        contact_email: email,
+        contact_phone: phone,
+        math: math,
+        science: science,
+        english: english
+
+    }
+    
+    const addNewStudent = () => {
+        console.log(newStudent)
+        setStudentArray([newStudent, ...studentArray]);
+        setStudentClass('');
+        setDivision('');
+        setRoll_no('');
+        setName('');
+        setAddress('');
+        setEmail('');
+        setPhone('');
+        setMath(0);
+        setScience(0);
+        setEnglish(0);
+
+    }
+    
 
 
     return (
@@ -56,56 +97,56 @@ function StudentList() {
                         <tr>
                             <td>Roll No</td>
                             <td>
-                                <input type="number" name="class" className="form-control" />
+                                <input type="number" name="roll_no" className="form-control" value={roll_no} onChange={(e)=>setRoll_no(e.target.value)}/>
                             </td>
                             <td>Class</td>
                             <td>
-                                <input type="text" name="class" className="form-control" />
+                                <input type="text" name="class" className="form-control" value={studentClass} onChange={(e)=>setStudentClass(e.target.value)}/>
                             </td>
                             <td>Division</td>
                             <td>
-                                <input type="text" name="class" className="form-control" />
+                                <input type="text" name="division" className="form-control" value={division} onChange={(e)=>setDivision(e.target.value)}/>
                             </td>
                         </tr>
                         <tr>
                             <td>Full Name</td>
                             <td colspan="6">
-                                <input type="text" name="class" className="form-control" />
+                                <input type="text" name="name" className="form-control" value={name} onChange={(e)=>setName(e.target.value)}/>
                             </td>
                         </tr>
                         <tr>
                             <td>Address</td>
                             <td colspan="6">
-                                <input type="text" name="class" className="form-control" />
+                                <input type="text" name="address" className="form-control" value={address} onChange={(e)=>setAddress(e.target.value)}/>
                             </td>
                         </tr>
                         <tr>
                             <td>Contact Email</td>
                             <td colspan="3">
-                                <input type="email" name="class" className="form-control" />
+                                <input type="email" name="email" className="form-control" value={email} onChange={(e)=>setEmail(e.target.value)}/>
                             </td>
                             <td>Contact Phone</td>
                             <td colspan="2">
-                                <input type="number" name="class" className="form-control" />
+                                <input type="text" name="phone" className="form-control" value={phone} onChange={(e)=>setPhone(e.target.value)}/>
                             </td>
                         </tr>
                         <tr>
                             <td>Math</td>
                             <td>
-                                <input type="number" name="class" className="form-control" />
+                                <input type="number" name="math" className="form-control" value={math} onChange={(e)=>setMath(e.target.value)}/>
                             </td>
                             <td>Science</td>
                             <td>
-                                <input type="number" name="class" className="form-control" />
+                                <input type="number" name="science" className="form-control" value={science} onChange={(e)=>setScience(e.target.value)}/>
                             </td>
                             <td>English</td>
                             <td>
-                                <input type="number" name="class" className="form-control" />
+                                <input type="number" name="english" className="form-control" value={english} onChange={(e)=>setEnglish(e.target.value)}/>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                        <input type="button" value="Add Student" className="btn btn-primary"/>
+                        <input type="button" value="Add Student" className="btn btn-primary" onClick={() => addNewStudent()}/>
             </AddStudentWrapper>
 
             <StudentTableWrapper>
