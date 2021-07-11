@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 function StudentList() {
+    // State Valiables
     const [studentClass, setStudentClass] = useState('');
     const [division, setDivision] = useState('');
     const [roll_no, setRoll_no] = useState('');
@@ -12,6 +13,8 @@ function StudentList() {
     const [math, setMath] = useState(0);
     const [science, setScience] = useState(0);
     const [english, setEnglish] = useState(0);
+    const [isEdited, setIsEdited] = useState(false)
+    const [isAdding, setIsAdding] = useState(false)
 
     const [studentArray, setStudentArray] = useState([
         {
@@ -70,8 +73,31 @@ function StudentList() {
     }
     
     const addNewStudent = () => {
-        console.log(newStudent)
-        setStudentArray([newStudent, ...studentArray]);
+        if (!isEdited) {
+            setStudentArray([newStudent, ...studentArray]);
+            cancelEditing()
+        }else {
+            updateStudent()
+        }
+
+    }
+
+    const editStudent = (student) => {
+        setIsEdited(true)
+        setStudentClass(student.class);
+        setDivision(student.division);
+        setRoll_no(student.roll_no);
+        setName(student.name);
+        setAddress(student.address);
+        setEmail(student.contact_email);
+        setPhone(student.contact_phone);
+        setMath(student.math);
+        setScience(student.science);
+        setEnglish(student.english);
+    }
+
+    const cancelEditing = () => {
+        setIsEdited(false)
         setStudentClass('');
         setDivision('');
         setRoll_no('');
@@ -82,7 +108,25 @@ function StudentList() {
         setMath(0);
         setScience(0);
         setEnglish(0);
+    }
 
+    const updateStudent = () => {
+        var data = studentArray;
+        var indexOfStudent = data.findIndex(student => student.roll_no === roll_no)
+        if (indexOfStudent !== null) {
+            data[indexOfStudent].class = studentClass;
+            data[indexOfStudent].division = division;
+            data[indexOfStudent].name = name;
+            data[indexOfStudent].address = address;
+            data[indexOfStudent].contact_email = email;
+            data[indexOfStudent].contact_phone = phone;
+            data[indexOfStudent].math = math;
+            data[indexOfStudent].science = science;
+            data[indexOfStudent].english = english;
+
+        }
+        setStudentArray(data);
+        cancelEditing()
     }
     
 
@@ -126,7 +170,7 @@ function StudentList() {
                                 <input type="email" name="email" className="form-control" value={email} onChange={(e)=>setEmail(e.target.value)}/>
                             </td>
                             <td>Contact Phone</td>
-                            <td colspan="2">
+                            <td colspan="2">``
                                 <input type="text" name="phone" className="form-control" value={phone} onChange={(e)=>setPhone(e.target.value)}/>
                             </td>
                         </tr>
@@ -146,13 +190,22 @@ function StudentList() {
                         </tr>
                     </tbody>
                 </table>
-                        <input type="button" value="Add Student" className="btn btn-primary" onClick={() => addNewStudent()}/>
+                    {
+                        isEdited ? 
+                        <div>
+                            <input type="button" value={isEdited? "Update" : "Add" } className={isEdited? "btn btn-danger" : "btn btn-primary"} onClick={() => addNewStudent()}/>
+                            <input type="button" value="Cancel" className="btn btn-light" onClick={() => cancelEditing()}/>
+                        </div>
+                        :
+                        <input type="button" value={isEdited? "Update" : "Add" } className={isEdited? "btn btn-denger" : "btn btn-primary"} onClick={() => addNewStudent()}/>
+                    }
             </AddStudentWrapper>
 
             <StudentTableWrapper>
                 <table className="table table-hover table-success">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>Class</th>
                             <th>Division</th>
                             <th>Roll No</th>
@@ -170,6 +223,7 @@ function StudentList() {
                     <tbody>
                         {studentArray.map((student, i) => 
                             <tr key={i}>
+                                <td>{++i}</td>
                                 <td>{student.class}</td>
                                 <td>{student.division}</td>
                                 <td>{student.roll_no}</td>
@@ -181,7 +235,7 @@ function StudentList() {
                                 <td>{student.science}</td>
                                 <td>{student.english}</td>
                                 <td>
-                                    <input type="button" value="edit" className="btn btn-link"/>
+                                    <input type="button" value="edit" className="btn btn-link" onClick={() => editStudent(student)}/>
                                 </td>
                                 <td>
                                     <input type="button" value="delete" className="btn btn-link"/>
@@ -203,6 +257,10 @@ const AddStudentWrapper = styled.div`
     text-align: center;
     border: solid 2px gray;
     background-color: #eed294;
+    .btn {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
 `
 const StudentTableWrapper = styled.div`
     padding: 30px;
