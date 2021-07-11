@@ -83,6 +83,7 @@ function StudentList() {
     }
 
     const editStudent = (student) => {
+        setIsAdding(true)
         setIsEdited(true)
         setStudentClass(student.class);
         setDivision(student.division);
@@ -97,6 +98,7 @@ function StudentList() {
     }
 
     const cancelEditing = () => {
+        setIsAdding(false)
         setIsEdited(false)
         setStudentClass('');
         setDivision('');
@@ -128,77 +130,85 @@ function StudentList() {
         setStudentArray(data);
         cancelEditing()
     }
+
+    const deleteStudent = (roll_no) => {
+        var data = studentArray;
+        data = data.filter(student => student.roll_no !== roll_no)
+        setStudentArray(data)
+    }
     
 
 
     return (
         <StudentListWrapper>
-            <AddStudentWrapper>
-                <h4>Add a Student</h4>
-                <table className="table">
-                    <thead></thead>
-                    <tbody>
-                        <tr>
-                            <td>Roll No</td>
-                            <td>
-                                <input type="number" name="roll_no" className="form-control" value={roll_no} onChange={(e)=>setRoll_no(e.target.value)}/>
-                            </td>
-                            <td>Class</td>
-                            <td>
-                                <input type="text" name="class" className="form-control" value={studentClass} onChange={(e)=>setStudentClass(e.target.value)}/>
-                            </td>
-                            <td>Division</td>
-                            <td>
-                                <input type="text" name="division" className="form-control" value={division} onChange={(e)=>setDivision(e.target.value)}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Full Name</td>
-                            <td colspan="6">
-                                <input type="text" name="name" className="form-control" value={name} onChange={(e)=>setName(e.target.value)}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Address</td>
-                            <td colspan="6">
-                                <input type="text" name="address" className="form-control" value={address} onChange={(e)=>setAddress(e.target.value)}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Contact Email</td>
-                            <td colspan="3">
-                                <input type="email" name="email" className="form-control" value={email} onChange={(e)=>setEmail(e.target.value)}/>
-                            </td>
-                            <td>Contact Phone</td>
-                            <td colspan="2">``
-                                <input type="text" name="phone" className="form-control" value={phone} onChange={(e)=>setPhone(e.target.value)}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Math</td>
-                            <td>
-                                <input type="number" name="math" className="form-control" value={math} onChange={(e)=>setMath(e.target.value)}/>
-                            </td>
-                            <td>Science</td>
-                            <td>
-                                <input type="number" name="science" className="form-control" value={science} onChange={(e)=>setScience(e.target.value)}/>
-                            </td>
-                            <td>English</td>
-                            <td>
-                                <input type="number" name="english" className="form-control" value={english} onChange={(e)=>setEnglish(e.target.value)}/>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                    {
-                        isEdited ? 
-                        <div>
-                            <input type="button" value={isEdited? "Update" : "Add" } className={isEdited? "btn btn-danger" : "btn btn-primary"} onClick={() => addNewStudent()}/>
-                            <input type="button" value="Cancel" className="btn btn-light" onClick={() => cancelEditing()}/>
-                        </div>
-                        :
-                        <input type="button" value={isEdited? "Update" : "Add" } className={isEdited? "btn btn-denger" : "btn btn-primary"} onClick={() => addNewStudent()}/>
-                    }
+                    <input tybe="button" value="Add a Student" className="btn btn-dark" style={{ marginBottom: "20px"}} onClick={() => isAdding ? setIsAdding(false) : setIsAdding(true)}/>
+            <AddStudentWrapper style={{display: `${isAdding ? "" : "none"}`}}>
+                <div>
+                    <table className="table">
+                        <thead></thead>
+                        <tbody>
+                            <tr>
+                                <td>Roll No</td>
+                                <td>
+                                    <input type="number" name="roll_no" className="form-control" value={roll_no} onChange={(e)=>setRoll_no(e.target.value)}/>
+                                </td>
+                                <td>Class</td>
+                                <td>
+                                    <input type="text" name="class" className="form-control" value={studentClass} onChange={(e)=>setStudentClass(e.target.value)}/>
+                                </td>
+                                <td>Division</td>
+                                <td>
+                                    <input type="text" name="division" className="form-control" value={division} onChange={(e)=>setDivision(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Full Name</td>
+                                <td colspan="6">
+                                    <input type="text" name="name" className="form-control" value={name} onChange={(e)=>setName(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Address</td>
+                                <td colspan="6">
+                                    <input type="text" name="address" className="form-control" value={address} onChange={(e)=>setAddress(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Contact Email</td>
+                                <td colspan="3">
+                                    <input type="email" name="email" className="form-control" value={email} onChange={(e)=>setEmail(e.target.value)}/>
+                                </td>
+                                <td>Contact Phone</td>
+                                <td colspan="2">``
+                                    <input type="text" name="phone" className="form-control" value={phone} onChange={(e)=>setPhone(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Math</td>
+                                <td>
+                                    <input type="number" name="math" className="form-control" value={math} onChange={(e)=>setMath(e.target.value)}/>
+                                </td>
+                                <td>Science</td>
+                                <td>
+                                    <input type="number" name="science" className="form-control" value={science} onChange={(e)=>setScience(e.target.value)}/>
+                                </td>
+                                <td>English</td>
+                                <td>
+                                    <input type="number" name="english" className="form-control" value={english} onChange={(e)=>setEnglish(e.target.value)}/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        {
+                            isEdited ? 
+                            <div>
+                                <input type="button" value={isEdited? "Update" : "Add" } className={isEdited? "btn btn-danger" : "btn btn-primary"} onClick={() => addNewStudent()}/>
+                                <input type="button" value="Cancel" className="btn btn-light" onClick={() => cancelEditing()}/>
+                            </div>
+                            :
+                            <input type="button" value={isEdited? "Update" : "Add" } className={isEdited? "btn btn-denger" : "btn btn-primary"} onClick={() => addNewStudent()}/>
+                        }
+                </div>
             </AddStudentWrapper>
 
             <StudentTableWrapper>
@@ -238,7 +248,7 @@ function StudentList() {
                                     <input type="button" value="edit" className="btn btn-link" onClick={() => editStudent(student)}/>
                                 </td>
                                 <td>
-                                    <input type="button" value="delete" className="btn btn-link"/>
+                                    <input type="button" value="delete" className="btn btn-link" onClick={() => deleteStudent(student.roll_no)}/>
                                 </td>
                             </tr>
                         )}
