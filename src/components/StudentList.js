@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 function StudentList() {
     // State Valiables
     const [studentClass, setStudentClass] = useState('');
     const [division, setDivision] = useState('');
-    const [roll_no, setRoll_no] = useState('');
+    const [roll_no, setRoll_no] = useState(0);
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
@@ -13,14 +13,15 @@ function StudentList() {
     const [math, setMath] = useState(0);
     const [science, setScience] = useState(0);
     const [english, setEnglish] = useState(0);
-    const [isEdited, setIsEdited] = useState(false)
-    const [isAdding, setIsAdding] = useState(false)
+    const [isEdited, setIsEdited] = useState(false);
+    const [isAdding, setIsAdding] = useState(false);
+    const [displayPopUp, setDisplayPopUp] = useState('none')
 
     const [studentArray, setStudentArray] = useState([
         {
             class: "V", 
             division: "A", 
-            roll_no:1, 
+            roll_no:140128, 
             name: "Subrata Roy",
             address: "Atlanta, GA",
             contact_email: "subrata.roy@gmail.com",
@@ -33,7 +34,7 @@ function StudentList() {
         {
             class: "VI", 
             division: "A", 
-            roll_no:2, 
+            roll_no:223159, 
             name: "Sajal Roy",
             address: "Atlanta, GA",
             contact_email: "sajal.roy@gmail.com",
@@ -46,7 +47,7 @@ function StudentList() {
         {
             class: "V", 
             division: "A", 
-            roll_no:3, 
+            roll_no:345123, 
             name: "Priyanka Das",
             address: "Atlanta, GA",
             contact_email: "priyanka.das@gmail.com",
@@ -57,6 +58,19 @@ function StudentList() {
 
         }
     ])
+
+    useEffect(() => {
+        generateRollNo();
+    }, [isAdding])
+
+    const generateRollNo = () => {
+        var roll = Math.floor(Math.random(1)*999999);
+        if (roll.toString().length === 6) {
+            setRoll_no(roll)
+        }else {
+            generateRollNo();
+        }
+    }
 
     var newStudent = {
         class: studentClass, 
@@ -73,13 +87,13 @@ function StudentList() {
     }
     
     const addNewStudent = () => {
-        if (!isEdited) {
+        var data = studentArray;
+        if (!isEdited && data.filter(student => student.roll_no !== roll_no)) {
             setStudentArray([newStudent, ...studentArray]);
             cancelEditing()
         }else {
             updateStudent()
         }
-
     }
 
     const editStudent = (student) => {
@@ -131,13 +145,25 @@ function StudentList() {
         cancelEditing()
     }
 
-    const deleteStudent = (roll_no) => {
-        var data = studentArray;
-        data = data.filter(student => student.roll_no !== roll_no)
-        setStudentArray(data)
+    const deleteStudent = (e) => {
+        if (roll_no && e.target.value === "delete") {
+            var data = studentArray;
+            data = data.filter(student => student.roll_no !== roll_no)
+            setStudentArray(data)
+        }
+        setDisplayPopUp("none");
     }
-    
 
+    const showPopUp = (roll_no) => {
+        setDisplayPopUp("block");
+        setRoll_no(roll_no);
+    }
+
+    window.onclick = function(event) {
+        if (event.target.id === "myModal") {
+          setDisplayPopUp("none");
+        }
+      }
 
     return (
         <StudentListWrapper>
@@ -150,21 +176,21 @@ function StudentList() {
                             <tr>
                                 <td>Roll No</td>
                                 <td>
-                                    <input type="number" name="roll_no" className="form-control" value={roll_no} onChange={(e)=>setRoll_no(e.target.value)}/>
+                                    <input type="number" name="roll_no" className="form-control" value={roll_no} onChange={(e)=>setRoll_no(e.target.value)} readOnly="true"/>
                                 </td>
                                 <td>Class</td>
                                 <td>
-                                    <input type="text" name="class" className="form-control" value={studentClass} onChange={(e)=>setStudentClass(e.target.value)}/>
+                                    <input type="text" name="class" className="form-control" value={studentClass} onChange={(e)=>setStudentClass(e.target.value)} required/>
                                 </td>
                                 <td>Division</td>
                                 <td>
-                                    <input type="text" name="division" className="form-control" value={division} onChange={(e)=>setDivision(e.target.value)}/>
+                                    <input type="text" name="division" className="form-control" value={division} onChange={(e)=>setDivision(e.target.value)} required/>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Full Name</td>
                                 <td colspan="6">
-                                    <input type="text" name="name" className="form-control" value={name} onChange={(e)=>setName(e.target.value)}/>
+                                    <input type="text" name="name" className="form-control" value={name} onChange={(e)=>setName(e.target.value)} required/>
                                 </td>
                             </tr>
                             <tr>
@@ -180,7 +206,7 @@ function StudentList() {
                                 </td>
                                 <td>Contact Phone</td>
                                 <td colspan="2">``
-                                    <input type="text" name="phone" className="form-control" value={phone} onChange={(e)=>setPhone(e.target.value)}/>
+                                    <input type="text" name="phone" className="form-control" value={phone} onChange={(e)=>setPhone(e.target.value)} required/>
                                 </td>
                             </tr>
                             <tr>
@@ -248,20 +274,76 @@ function StudentList() {
                                     <input type="button" value="edit" className="btn btn-link" onClick={() => editStudent(student)}/>
                                 </td>
                                 <td>
-                                    <input type="button" value="delete" className="btn btn-link" onClick={() => deleteStudent(student.roll_no)}/>
+                                    <input type="button" value="delete" className="btn btn-link" onClick={() => showPopUp(student.roll_no)}/>
                                 </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </StudentTableWrapper>
+            <PopUpWrapper id="myModal" className="modal" style={{ display: `${displayPopUp}`}}>
+
+                <div className="modal-content">
+                    <span className="close" onClick={() => setDisplayPopUp("none")}>&times;</span>
+                    <h3>Do you want to delete?</h3>
+                    <a>
+                        <input type="button" className="btn btn-danger" style={{marginLeft: "20px", marginRight: "20px"}} value="delete" onClick={(e) => deleteStudent(e)}/>
+                        <input type="button" className="btn btn-secondary"  style={{marginLeft: "20px", marginRight: "20px"}} value="cancel" onClick={() => setDisplayPopUp("none")}/>
+
+                    </a>
+                </div>
+
+            </PopUpWrapper>
         </StudentListWrapper>
     )
 }
 
 export default StudentList
 
-const StudentListWrapper = styled.div``
+const StudentListWrapper = styled.div`
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+`
+const PopUpWrapper = styled.div`
+    
+`
 const AddStudentWrapper = styled.div`
     padding: 30px;
     text-align: center;
